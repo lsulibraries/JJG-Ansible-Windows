@@ -54,7 +54,10 @@ if ! command -v ansible >/dev/null; then
   pip install paramiko pyyaml jinja2 markupsafe
 
   echo "Installing Ansible."
-  pip install ansible
+  #pip install ansible
+  git clone https://github.com/ansible/ansible.git /opt/ansible
+  git -C /opt/ansible submodule update --init --recursive
+  source /opt/ansible/hacking/env-setup
 fi
 
 # Install requirements.
@@ -63,4 +66,5 @@ find "/vagrant/$PLAYBOOK_DIR" \( -name "requirements.yml" -o -name "requirements
 
 # Run the playbook.
 echo "Running Ansible provisioner defined in Vagrantfile."
-ansible-playbook -i 'localhost,' "/vagrant/${ANSIBLE_PLAYBOOK}" --extra-vars "is_windows=true" --connection=local
+#ansible-playbook -vvvv -i "/vagrant/hosts" "/vagrant/${ANSIBLE_PLAYBOOK}" --extra-vars "is_windows=true" --connection=local -u ansible
+ansible-playbook /vagrant/site.yml -i /vagrant/hosts -u vagrant -vv --connection=local
