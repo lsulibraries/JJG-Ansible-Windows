@@ -57,6 +57,7 @@ if ! command -v ansible >/dev/null; then
   #pip install ansible
   git clone https://github.com/ansible/ansible.git /opt/ansible
   git -C /opt/ansible submodule update --init --recursive
+  git -C /opt/ansible checkout 3a50393cf7d8199c8547ebc4fbe79242103c3136
   source /opt/ansible/hacking/env-setup
 fi
 
@@ -67,4 +68,11 @@ find "/vagrant/$PLAYBOOK_DIR" \( -name "requirements.yml" -o -name "requirements
 # Run the playbook.
 echo "Running Ansible provisioner defined in Vagrantfile."
 #ansible-playbook -vvvv -i "/vagrant/hosts" "/vagrant/${ANSIBLE_PLAYBOOK}" --extra-vars "is_windows=true" --connection=local -u ansible
-ansible-playbook /vagrant/site.yml -i /vagrant/hosts -u vagrant -vv --connection=local
+
+cd /opt
+git clone https://github.com/lsulibraries/islandora_ansible.git
+cd islandora_ansible
+git checkout mono
+git submodule init
+git submodule update
+ansible-playbook site.yml -i hosts -u vagrant -vv --connection=local
