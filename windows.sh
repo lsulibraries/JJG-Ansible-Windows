@@ -68,5 +68,6 @@ echo "Running Ansible provisioner defined in Vagrantfile."
 cd /opt
 git clone --recursive https://github.com/lsulibraries/islandora_ansible.git
 cd islandora_ansible
+git checkout multisite
 
-ansible-playbook local.yml -i hosts -u vagrant -vv --connection=local
+#ansible-playbook 6-dev.play -u vagrant -vv --connection=local
