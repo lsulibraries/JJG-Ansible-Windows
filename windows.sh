@@ -72,4 +72,4 @@ git checkout multisite
 git submodule init
 git submodule update
 
-ansible-playbook 6-dev.play -u vagrant -vv --connection=local -i /vagrant/win.inv
+ansible-playbook 888-dev.play -u vagrant -vv --connection=local -i /vagrant/win.inv
