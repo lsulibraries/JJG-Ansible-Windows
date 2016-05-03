@@ -29,32 +29,25 @@ if ! command -v ansible >/dev/null; then
     yum install -y git python python-devel
   elif [[ ! -z ${APT_GET} ]]; then
     apt-get update
-    apt-get install -y git python python-dev python-pip
+    apt-get install -y git python python-dev libffi-dev g++ libssl-dev
   else
     echo "Neither yum nor apt-get are available."
     exit 1;
   fi
 
-#  echo "Installing pip via easy_install."
-#  wget https://raw.githubusercontent.com/ActiveState/ez_setup/v0.9/ez_setup.py
-#  python ez_setup.py && rm -f ez_setup.py
-#  easy_install pip
-
-  # Make sure setuptools are installed crrectly.
-  pip install setuptools --no-use-wheel --upgrade
 
   # Install GCC / required build tools.
   if [[ ! -z $YUM ]]; then
     yum install -y gcc
   elif [[ ! -z $APT_GET ]]; then
-    apt-get install -y build-essential
+    apt-get install -y build-essential python-pip
   fi
 
   echo "Installing required python modules."
   pip install paramiko pyyaml jinja2 markupsafe
 
   echo "Installing Ansible."
-  pip install -U ansible
+  pip install ansible
 fi
 
 # Install requirements.
@@ -63,13 +56,4 @@ find "/vagrant/$PLAYBOOK_DIR" \( -name "requirements.yml" -o -name "requirements
 
 # Run the playbook.
 echo "Running Ansible provisioner defined in Vagrantfile."
-#ansible-playbook -vvvv -i "/vagrant/hosts" "/vagrant/${ANSIBLE_PLAYBOOK}" --extra-vars "is_windows=true" --connection=local -u ansible
-
-cd /opt
-git clone --recursive https://github.com/lsulibraries/islandora_ansible.git
-cd islandora_ansible
-git checkout multisite
-git submodule init
-git submodule update
-
-ansible-playbook 6-dev.play -u vagrant -vv --connection=local -i /vagrant/win.inv
+ansible-playbook -i 'localhost,' "/vagrant/${ANSIBLE_PLAYBOOK}" --extra-vars "is_windows=true" --connection=local
